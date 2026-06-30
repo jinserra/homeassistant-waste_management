@@ -16,7 +16,7 @@ from .const import DOMAIN, CONF_ACCOUNT, CONF_SERVICES
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS: list[Platform] = [Platform.SENSOR]
+PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.CALENDAR]
 UPDATE_INTERVAL = timedelta(hours=6)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
