@@ -5,11 +5,11 @@ import logging
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN, CONF_ACCOUNT, CONF_SERVICES
 
 _LOGGER = logging.getLogger(__name__)
-
 
 async def async_setup_entry(hass: HomeAssistant, config, add_entities):
     """Set up the calendar platform."""
@@ -20,17 +20,18 @@ async def async_setup_entry(hass: HomeAssistant, config, add_entities):
     config_data = config.data
     account_id = config_data[CONF_ACCOUNT]
     
-    # We name the calendar based on what you named the integration during setup
+    # Check for selected services in options first, fallback to data
+    services = config.options.get(CONF_SERVICES, config.data.get(CONF_SERVICES, []))
+
     name = config.title or "Waste Management"
     
     add_entities(
         [
             WasteManagementCalendar(
-                coordinator, name, account_id, service_names, config_data[CONF_SERVICES]
+                coordinator, name, account_id, service_names, services
             )
         ]
     )
-
 
 class WasteManagementCalendar(CoordinatorEntity, CalendarEntity):
     """Representation of a Waste Management Calendar."""
@@ -40,8 +41,18 @@ class WasteManagementCalendar(CoordinatorEntity, CalendarEntity):
         super().__init__(coordinator)
         self._attr_name = name
         self._attr_unique_id = f"{account_id}_calendar"
+        self.account_id = account_id
         self.service_names = service_names
         self.active_services = active_services
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device information to link this entity to the device."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.account_id)},
+            name=f"Waste Management ({self.account_id})",
+            manufacturer="Waste Management"
+        )
 
     @property
     def event(self) -> CalendarEvent | None:
@@ -72,7 +83,6 @@ class WasteManagementCalendar(CoordinatorEntity, CalendarEntity):
             
             for pickup in pickups:
                 pickup_date = pickup.astimezone().date()
-                
                 events.append(
                     CalendarEvent(
                         summary=svc_name,
@@ -92,7 +102,6 @@ class WasteManagementCalendar(CoordinatorEntity, CalendarEntity):
     ) -> list[CalendarEvent]:
         """Return calendar events within a datetime range."""
         events = self._get_all_events()
-        
         start_filter = start_date.date()
         end_filter = end_date.date()
         

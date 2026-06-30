@@ -29,5 +29,16 @@
       "invalid_auth": "Invalid authentication",
       "unknown": "Unexpected error"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Services",
+        "description": "Select the services you want to track.",
+        "data": {
+          "services": "Services"
+        }
+      }
+    }
   }
 }

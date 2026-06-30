@@ -29,5 +29,16 @@
       "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
       "unknown": "[%key:common::config_flow::error::unknown%]"
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Services",
+        "description": "Select the services you want to track.",
+        "data": {
+          "services": "Services"
+        }
+      }
+    }
   }
 }

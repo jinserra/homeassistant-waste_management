@@ -5,6 +5,7 @@ import logging
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN, CONF_ACCOUNT, CONF_SERVICES
 
@@ -18,10 +19,12 @@ async def async_setup_entry(hass: HomeAssistant, config, add_entities):
     
     config_data = config.data
     account_id = config_data[CONF_ACCOUNT]
+
+    # Check for selected services in options first, fallback to data
+    services = config.options.get(CONF_SERVICES, config.data.get(CONF_SERVICES, []))
     
     entities = []
-    for svc_id in config_data[CONF_SERVICES]:
-        # Fallback to the service ID if the name can't be found
+    for svc_id in services:
         name = service_names.get(svc_id, f"WM Service {svc_id}")
         entities.append(
             WasteManagementSensorEntity(coordinator, name, account_id, svc_id)
@@ -47,6 +50,15 @@ class WasteManagementSensorEntity(CoordinatorEntity, SensorEntity):
         self._attr_icon = "mdi:trash-can"
         # Using the modern Enum instead of the deprecated raw string
         self._attr_device_class = SensorDeviceClass.TIMESTAMP
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device information to link this entity to the device."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.account_id)},
+            name=f"Waste Management ({self.account_id})",
+            manufacturer="Waste Management"
+        )
 
     @property
     def native_value(self):
