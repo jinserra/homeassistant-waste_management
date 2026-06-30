@@ -3,11 +3,10 @@ import datetime
 import logging
 
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
-from homeassistant.const import CONF_ACCOUNT, CONF_SERVICES
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import DOMAIN
+from .const import DOMAIN, CONF_ACCOUNT, CONF_SERVICES
 
 _LOGGER = logging.getLogger(__name__)
 
