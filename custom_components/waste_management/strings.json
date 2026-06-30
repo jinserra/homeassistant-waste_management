@@ -2,10 +2,25 @@
   "config": {
     "step": {
       "user": {
+        "title": "Authenticate",
+        "description": "Enter your wm.com credentials.",
         "data": {
-          "host": "[%key:common::config_flow::data::host%]",
           "username": "[%key:common::config_flow::data::username%]",
           "password": "[%key:common::config_flow::data::password%]"
+        }
+      },
+      "accounts": {
+        "title": "Select Account",
+        "description": "Select the Waste Management account you want to track.",
+        "data": {
+          "account": "Account"
+        }
+      },
+      "services": {
+        "title": "Select Services",
+        "description": "Select which services (Trash, Recycling, Yard Waste, etc.) you want to create sensors for.",
+        "data": {
+          "services": "Services"
         }
       }
     },

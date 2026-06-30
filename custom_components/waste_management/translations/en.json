@@ -1,18 +1,33 @@
 {
-    "config": {
-        "error": {
-            "cannot_connect": "Failed to connect",
-            "invalid_auth": "Invalid authentication",
-            "unknown": "Unexpected error"
-        },
-        "step": {
-            "user": {
-                "data": {
-                    "host": "Host",
-                    "password": "Password",
-                    "username": "Username"
-                }
-            }
+  "config": {
+    "step": {
+      "user": {
+        "title": "Authenticate",
+        "description": "Enter your wm.com credentials.",
+        "data": {
+          "username": "Username",
+          "password": "Password"
         }
+      },
+      "accounts": {
+        "title": "Select Account",
+        "description": "Select the Waste Management account you want to track.",
+        "data": {
+          "account": "Account"
+        }
+      },
+      "services": {
+        "title": "Select Services",
+        "description": "Select which services (Trash, Recycling, Yard Waste, etc.) you want to create sensors for.",
+        "data": {
+          "services": "Services"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
     }
+  }
 }
