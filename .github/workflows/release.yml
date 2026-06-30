@@ -1,0 +1,31 @@
+name: Automated Release Carrier
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'custom_components/waste_management/manifest.json'
+
+permissions:
+  contents: write
+
+jobs:
+  auto-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version from manifest.json
+        id: extract_version
+        run: |
+          VERSION=$(jq -r '.version' custom_components/waste_management/manifest.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.extract_version.outputs.version }}
+          name: v${{ steps.extract_version.outputs.version }}
+          generate_release_notes: true
