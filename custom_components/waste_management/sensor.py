@@ -1,11 +1,11 @@
 """Sensor platform for Waste Management Pickup."""
-import datetime
 import logging
 
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN, CONF_ACCOUNT, CONF_SERVICES
 
@@ -69,11 +69,7 @@ class WasteManagementSensorEntity(CoordinatorEntity, SensorEntity):
         if not pickup:
             return None
             
-        today = datetime.date.today()
-        proposed_pickup = pickup[0].astimezone()
-        
-        # If the first pickup date is in the past and we have upcoming ones, use the next one
-        if proposed_pickup.date() < today and len(pickup) > 1:
-            proposed_pickup = pickup[1].astimezone()
-            
-        return proposed_pickup
+        today = dt_util.now().date()
+        localized = [dt_util.as_local(p) for p in pickup]
+        future = [p for p in localized if p.date() >= today]
+        return future[0] if future else localized[-1]

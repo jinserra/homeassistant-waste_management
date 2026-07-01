@@ -30,17 +30,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # Check if options exist for CONF_SERVICES, otherwise fall back to data
     services = entry.options.get(CONF_SERVICES, entry.data.get(CONF_SERVICES, []))
 
-    # Initialize the client once to be reused by the coordinator
     client = WMClient(username, password, get_async_client(hass))
+    service_names: dict[str, str] = {}
 
     async def async_update_data():
         """Fetch data from API endpoint."""
         try:
-            # We re-authenticate here before fetching pickups, as the session might expire
-            # over the 6-hour polling interval.
             await client.async_authenticate()
             await client.async_okta_authorize()
-            
+
+            if not service_names:
+                wm_services = await client.async_get_services(account_id)
+                service_names.update({svc.id: svc.name for svc in wm_services})
+
             pickups = {}
             for svc_id in services:
                 pickups[svc_id] = await client.async_get_service_pickup(account_id, svc_id)
@@ -56,24 +58,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         update_interval=UPDATE_INTERVAL,
     )
 
-    # Do a one-time fetch of the service names so we can assign them to the sensors
-    # without having to re-authenticate inside the sensor platform.
-    try:
-        await client.async_authenticate()
-        await client.async_okta_authorize()
-        wm_services = await client.async_get_services(account_id)
-        service_names = {svc.id: svc.name for svc in wm_services}
-    except Exception as err:
-        _LOGGER.error("Failed to initialize Waste Management client during setup: %s", err)
-        return False
-
-    # Fetch initial data so we have state when entities are added
     await coordinator.async_config_entry_first_refresh()
 
-    # Store both the coordinator and the service names in hass.data
     hass.data[DOMAIN][entry.entry_id] = {
         "coordinator": coordinator,
-        "service_names": service_names
+        "service_names": service_names,
     }
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)

@@ -8,13 +8,16 @@ A forked and modernized version of the original `homeassistant-waste_management`
 
 ## 🚀 Features
 
-* **Calendar Support**(New): Pickup dates are mapped directly into your Home Assistant built-in calendar. 
-* **Device-Based Organization**(New): All individual pickup services are automatically grouped under a single, unified Waste Management device associated with your account number. 
-* **UI Configuration & Options Flow**(New): Entirely configurable via the Home Assistant integrations dashboard. Easily add or remove monitored service streams anytime via the Configure button without reinstalling.
-* **Migrated to `DataUpdateCoordinator`** (New):The integration now uses Home Assistant's built-in coordinator for background polling. This centralizes API requests, handles retry logic elegantly if the API goes down, and ensures your sensors properly report as "unavailable" during outages.
-* **Improved API Polling**(New): Previously, the integration would re-authenticate with the WM API for every single sensor on every single update. The code has been rewritten to establish a single authenticated session that is shared across all sensors, drastically reducing the number of requests and preventing potential rate-limiting or account lockouts.
-* **Polished Setup UI & Translations**(New): The configuration flow has been cleaned up. Unused legacy fields were removed, and proper English translations with step-by-step instructions were added to make setting up your account and selecting services in the UI a breeze.
-* **Updated Device Classes**(New): Transitioned to modern Home Assistant Enums (`SensorDeviceClass.TIMESTAMP`) for better long-term compatibility.
+* **Calendar Support**: Pickup dates are mapped directly into your Home Assistant built-in calendar. 
+* **Device-Based Organization**: All individual pickup services are automatically grouped under a single, unified Waste Management device associated with your account number. 
+* **UI Configuration & Options Flow**: Entirely configurable via the Home Assistant integrations dashboard. Easily add or remove monitored service streams anytime via the Configure button without reinstalling.
+* **Migrated to `DataUpdateCoordinator`**:The integration now uses Home Assistant's built-in coordinator for background polling. This centralizes API requests, handles retry logic elegantly if the API goes down, and ensures your sensors properly report as "unavailable" during outages.
+* **Improved API Polling**: Previously, the integration would re-authenticate with the WM API for every single sensor on every single update. The code has been rewritten to establish a single authenticated session that is shared across all sensors, drastically reducing the number of requests and preventing potential rate-limiting or account lockouts.
+* **Polished Setup UI & Translations**: The configuration flow has been cleaned up. Unused legacy fields were removed, and proper English translations with step-by-step instructions were added to make setting up your account and selecting services in the UI a breeze.
+* **Updated Device Classes**: Transitioned to modern Home Assistant Enums (`SensorDeviceClass.TIMESTAMP`) for better long-term compatibility.
+* **Accurate Next Pickup Date**(New): Sensors now advance past any number of consecutive stale pickup entries, always displaying the true next upcoming pickup date rather than stopping at the first past entry.
+* **HA-Timezone-Aware Dates**:(New) All pickup date calculations use Home Assistant's configured timezone (`dt_util`) instead of the host server's OS timezone, ensuring correct date display when the two differ.
+* **Reduced Startup API Calls**:(New) Service names and pickup data are now fetched in a single authenticated session on startup, reducing Okta authentication round-trips from three to one on every HA restart or reload.
 
 ## ⚙️ Installation
 

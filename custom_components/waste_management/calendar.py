@@ -6,6 +6,7 @@ from homeassistant.components.calendar import CalendarEntity, CalendarEvent
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN, CONF_ACCOUNT, CONF_SERVICES
 
@@ -61,7 +62,7 @@ class WasteManagementCalendar(CoordinatorEntity, CalendarEntity):
         if not events:
             return None
             
-        today = datetime.date.today()
+        today = dt_util.now().date()
         # Filter for events that are happening today or in the future
         future_events = [e for e in events if e.start >= today]
         
@@ -82,7 +83,7 @@ class WasteManagementCalendar(CoordinatorEntity, CalendarEntity):
             svc_name = self.service_names.get(svc_id, f"WM Service {svc_id}")
             
             for pickup in pickups:
-                pickup_date = pickup.astimezone().date()
+                pickup_date = dt_util.as_local(pickup).date()
                 events.append(
                     CalendarEvent(
                         summary=svc_name,
@@ -102,8 +103,8 @@ class WasteManagementCalendar(CoordinatorEntity, CalendarEntity):
     ) -> list[CalendarEvent]:
         """Return calendar events within a datetime range."""
         events = self._get_all_events()
-        start_filter = start_date.date()
-        end_filter = end_date.date()
+        start_filter = dt_util.as_local(start_date).date()
+        end_filter = dt_util.as_local(end_date).date()
         
         # Return events that fall within the requested view on the calendar dashboard
         return [

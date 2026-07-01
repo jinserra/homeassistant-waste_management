@@ -81,7 +81,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the accounts step."""
         errors = {}
 
-        if user_input is not None:
+        if user_input is not None and CONF_ACCOUNT in user_input:
             self.data[CONF_ACCOUNT] = user_input[CONF_ACCOUNT]
             return await self.async_step_services()
 
@@ -91,7 +91,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         except Exception as ex:
             _LOGGER.exception("Unexpected exception fetching accounts: %s", ex)
             errors["base"] = "unknown"
-            return self.async_show_form(step_id="accounts", errors=errors)
+            return self.async_show_form(step_id="accounts", data_schema=vol.Schema({}), errors=errors)
 
         return self.async_show_form(
             step_id="accounts",
@@ -107,9 +107,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the services step."""
         errors = {}
 
-        if user_input is not None:
+        if user_input is not None and CONF_SERVICES in user_input:
             self.data[CONF_SERVICES] = user_input[CONF_SERVICES]
-            
+
             # Use the account name as the title for the integration in the UI
             title = self._accounts.get(self.data[CONF_ACCOUNT], "Waste Management")
             return self.async_create_entry(title=title, data=self.data)
@@ -120,7 +120,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         except Exception as ex:
             _LOGGER.exception("Unexpected exception fetching services: %s", ex)
             errors["base"] = "unknown"
-            return self.async_show_form(step_id="services", errors=errors)
+            return self.async_show_form(step_id="services", data_schema=vol.Schema({}), errors=errors)
 
         return self.async_show_form(
             step_id="services",
