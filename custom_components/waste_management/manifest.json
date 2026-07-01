@@ -1,17 +1,17 @@
 {
   "domain": "waste_management",
   "name": "Waste Management",
-  "version": "0.3.0",
-  "integration_type": "service",
+  "codeowners": [
+    "@jinserra"
+  ],
   "config_flow": true,
+  "dependencies": [],
   "documentation": "https://github.com/jinserra/homeassistant-waste_management/blob/master/README.md",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jinserra/homeassistant-waste_management/issues",
   "requirements": [
     "waste-management==3.1.1"
   ],
-  "dependencies": [],
-  "codeowners": [
-    "@jinserra"
-  ],
-  "iot_class": "cloud_polling"
+  "version": "0.3.0"
 }
