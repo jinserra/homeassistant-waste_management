@@ -1,6 +1,6 @@
 # homeassistant-waste_management
 
-A forked and modernized version of the original `homeassistant-waste_management` integration. fully asynchronous Home Assistant integration to [Waste Management (wm.com)](https://www.wm.com) API to pull the next pickup dates for your services (e.g., trash, recycling, yard waste). 
+A forked and modernized version of the original `homeassistant-waste_management` [integration](https://github.com/dcmeglio/homeassistant-waste_management). Fully asynchronous Home Assistant integration to [Waste Management (wm.com)](https://www.wm.com) API to pull the next pickup dates for your services (trash, recycling, yard waste). 
 
 *Note: You will need a registered account on wm.com for this to work.*
 
